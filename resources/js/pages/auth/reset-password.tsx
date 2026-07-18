@@ -1,12 +1,7 @@
 import { Head, useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
-
-import InputError from '@/components/input-error';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import AuthLayout from '@/layouts/auth-layout';
+import '../auth/login.css';
 
 interface ResetPasswordProps {
     token: string;
@@ -36,63 +31,68 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
     };
 
     return (
-        <AuthLayout title="Reset password" description="Please enter your new password below">
-            <Head title="Reset password" />
+        <div className="auth-login-page">
+            <Head title="Новый пароль" />
 
-            <form onSubmit={submit}>
-                <div className="grid gap-6">
-                    <div className="grid gap-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input
+            <div className="auth-login-card">
+                <div className="auth-login-brand">
+                    <span className="auth-login-brand-dot" />
+                    <span className="auth-login-brand-text">BOOKFLOW</span>
+                </div>
+                <h1 className="auth-login-title">Новый пароль</h1>
+                <p className="auth-login-subtitle">Придумайте новый пароль для входа</p>
+
+                <form onSubmit={submit}>
+                    <div className="auth-login-field">
+                        <label htmlFor="email">Email</label>
+                        <input
                             id="email"
                             type="email"
                             name="email"
                             autoComplete="email"
                             value={data.email}
-                            className="mt-1 block w-full"
                             readOnly
                             onChange={(e) => setData('email', e.target.value)}
+                            style={{ opacity: 0.6, cursor: 'default' }}
                         />
-                        <InputError message={errors.email} className="mt-2" />
+                        {errors.email && <div className="auth-login-error">{errors.email}</div>}
                     </div>
 
-                    <div className="grid gap-2">
-                        <Label htmlFor="password">Password</Label>
-                        <Input
+                    <div className="auth-login-field">
+                        <label htmlFor="password">Новый пароль</label>
+                        <input
                             id="password"
                             type="password"
                             name="password"
                             autoComplete="new-password"
-                            value={data.password}
-                            className="mt-1 block w-full"
                             autoFocus
+                            value={data.password}
                             onChange={(e) => setData('password', e.target.value)}
-                            placeholder="Password"
+                            placeholder="Минимум 8 символов"
                         />
-                        <InputError message={errors.password} />
+                        {errors.password && <div className="auth-login-error">{errors.password}</div>}
                     </div>
 
-                    <div className="grid gap-2">
-                        <Label htmlFor="password_confirmation">Confirm password</Label>
-                        <Input
+                    <div className="auth-login-field">
+                        <label htmlFor="password_confirmation">Повторите пароль</label>
+                        <input
                             id="password_confirmation"
                             type="password"
                             name="password_confirmation"
                             autoComplete="new-password"
                             value={data.password_confirmation}
-                            className="mt-1 block w-full"
                             onChange={(e) => setData('password_confirmation', e.target.value)}
-                            placeholder="Confirm password"
+                            placeholder="Ещё раз новый пароль"
                         />
-                        <InputError message={errors.password_confirmation} className="mt-2" />
+                        {errors.password_confirmation && <div className="auth-login-error">{errors.password_confirmation}</div>}
                     </div>
 
-                    <Button type="submit" className="mt-4 w-full" disabled={processing}>
-                        {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                        Reset password
-                    </Button>
-                </div>
-            </form>
-        </AuthLayout>
+                    <button type="submit" className="auth-login-btn" disabled={processing} style={{ marginTop: 6 }}>
+                        {processing && <LoaderCircle />}
+                        Сохранить пароль
+                    </button>
+                </form>
+            </div>
+        </div>
     );
 }

@@ -31,9 +31,24 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
+        $user = $request->user();
+
+        if ($user->restaurant_id && ! $user->restaurant?->is_active) {
+            auth()->logout();
+
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'email' => 'Доступ для вашего ресторана временно приостановлен. Обратитесь к администратору платформы.',
+            ]);
+        }
+
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        return match ($user->role) {
+            'super_admin' => redirect()->route('super-admin.dashboard'),
+            'manager' => redirect()->route('admin.dashboard'),
+            'cashier' => redirect()->route('bookings.index'),
+            default => redirect()->intended(route('dashboard', absolute: false)),
+        };
     }
 
     /**
